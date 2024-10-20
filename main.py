@@ -26,6 +26,10 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
             },
     )
 
+@app.get("/")
+async def root():
+    return {"message": "Welcome to the Recipe API!"}
+
 @app.get("/recipes", response_model=Recipies)
 async def get_recipes(session: SessionDep):
     recipes = crud.get_recipes(session=session)
