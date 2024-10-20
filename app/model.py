@@ -24,3 +24,7 @@ class Recipies(SQLModel):
 class RecipeUpdateOut(SQLModel):
     message: str = Field(default="Recipe successfully updated!")
     recipe: Recipe
+
+class RecipeOut(SQLModel):
+    message: str = Field(default="Recipe details by id")
+    recipe: Recipe

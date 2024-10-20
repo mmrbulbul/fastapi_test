@@ -1,6 +1,6 @@
 from sqlmodel import Session, select
 
-from app.model import Recipe, RecipeUpdateOut, Recipies
+from app.model import Recipe, RecipeUpdateOut, Recipies, RecipeOut
 
 
 def create_recipe(*, session: Session, reciepe_create: Recipe) -> Recipe | None:
