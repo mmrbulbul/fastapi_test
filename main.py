@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, Request
 from app.db import create_db_and_tables, drop_db_and_tables
-from app.model import RecipeBase, Recipe, Recipies, RecipeOut, RecipeOutCreate
+from app.model import RecipeBase, Recipies, RecipeOut, RecipeCreateOut
 from app import crud
 from app.deps import SessionDep
 from fastapi.exceptions import RequestValidationError
@@ -15,9 +15,10 @@ def on_startup():
 # def on_shutdown():
 #     drop_db_and_tables()
     
-# Custom handler for validation errors (422 Unprocessable Entity)
+# Custom handler for validation errors
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    print(request.url)
     return JSONResponse(
         status_code=422,
         content={
@@ -26,12 +27,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
             },
     )
 
-@app.get("")
-async def root():
-    return JSONResponse(
-        status_code=404,
-        content={}
-    )
+
 
 @app.get("/recipes", response_model=Recipies)
 async def get_recipes(session: SessionDep):
@@ -46,10 +42,10 @@ async def get_recipe(id: int, session: SessionDep):
     recipe = RecipeOut(recipe=recipe)
     return recipe
 
-@app.post("/recipes", response_model=RecipeOutCreate)
+@app.post("/recipes", response_model=RecipeCreateOut)
 async def create_recipe(recipe_in: RecipeBase, session: SessionDep):
     recipe = crud.create_recipe(session=session, reciepe_create=recipe_in)
-    return RecipeOutCreate(recipe=recipe)
+    return RecipeCreateOut(recipe=recipe)
 
 @app.patch("/recipes/{id}")
 async def update_recipe(id: int, recipe_in: RecipeBase, session: SessionDep):
@@ -71,3 +67,10 @@ async def delete_recipe(id: int, session: SessionDep):
         return {  "message": "Recipe successfully removed!" }
     else:
         return { "message": "No recipe found" }
+    
+@app.get("")
+async def root():
+    return JSONResponse(
+        status_code=404,
+        content={}
+    )

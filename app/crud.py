@@ -1,18 +1,15 @@
 from sqlmodel import Session, select
 
-from app.model import Recipe, RecipeUpdateOut, Recipies, RecipeOut
+from app.model import Recipe, RecipeUpdateOut, Recipies
 
 
 def create_recipe(*, session: Session, reciepe_create: Recipe) -> Recipe | None:
-    try:
-        db_obj = Recipe.validate(reciepe_create)
-        session.add(db_obj)
-        session.commit()
-        session.refresh(db_obj)
-        return db_obj
-    except Exception as e:
-        print(f"Error creating recipe: {e}")
-        return None
+    db_obj = Recipe.validate(reciepe_create)
+    session.add(db_obj)
+    session.commit()
+    session.refresh(db_obj)
+    return db_obj
+
 
 def get_recipe_by_id(*, session: Session, recipe_id: int) -> Recipe | None:
     statement = select(Recipe).where(Recipe.id == recipe_id)

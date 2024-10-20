@@ -29,6 +29,6 @@ class RecipeOut(SQLModel):
     message: str = Field(default="Recipe details by id")
     recipe: Recipe
 
-class RecipeOutCreate(SQLModel):
+class RecipeCreateOut(SQLModel):
     message: str = Field(default="Recipe successfully created!")
     recipe: Recipe
