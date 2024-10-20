@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, Request
 from app.db import create_db_and_tables, drop_db_and_tables
-from app.model import RecipeBase, Recipe, Recipies
+from app.model import RecipeBase, Recipe, Recipies, RecipeOut
 from app import crud
 from app.deps import SessionDep
 from fastapi.exceptions import RequestValidationError
@@ -39,11 +39,12 @@ async def get_recipes(session: SessionDep):
     print("here", recipes)
     return recipes
 
-@app.get("/recipes/{id}", response_model=Recipe)
+@app.get("/recipes/{id}", response_model=RecipeOut)
 async def get_recipe(id: int, session: SessionDep):
     recipe = crud.get_recipe_by_id(session=session, recipe_id=id)
     if not recipe:
         raise HTTPException(status_code=404, detail="Recipe not found")
+    recipe = RecipeOut(recipe=recipe)
     return recipe
 
 @app.post("/recipes", response_model=Recipe)
