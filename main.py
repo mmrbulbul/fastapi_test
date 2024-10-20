@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, Request
 from app.db import create_db_and_tables, drop_db_and_tables
-from app.model import RecipeBase, Recipe, Recipies, RecipeOut
+from app.model import RecipeBase, Recipe, Recipies, RecipeOut, RecipeOutCreate
 from app import crud
 from app.deps import SessionDep
 from fastapi.exceptions import RequestValidationError
@@ -36,7 +36,6 @@ async def root():
 @app.get("/recipes", response_model=Recipies)
 async def get_recipes(session: SessionDep):
     recipes = crud.get_recipes(session=session)
-    print("here", recipes)
     return recipes
 
 @app.get("/recipes/{id}", response_model=RecipeOut)
@@ -47,10 +46,10 @@ async def get_recipe(id: int, session: SessionDep):
     recipe = RecipeOut(recipe=recipe)
     return recipe
 
-@app.post("/recipes", response_model=Recipe)
+@app.post("/recipes", response_model=RecipeOutCreate)
 async def create_recipe(recipe_in: RecipeBase, session: SessionDep):
     recipe = crud.create_recipe(session=session, reciepe_create=recipe_in)
-    return recipe
+    return RecipeOutCreate(recipe=recipe)
 
 @app.patch("/recipes/{id}")
 async def update_recipe(id: int, recipe_in: RecipeBase, session: SessionDep):
