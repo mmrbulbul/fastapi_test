@@ -26,9 +26,12 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
             },
     )
 
-@app.get("/")
+@app.get("")
 async def root():
-    return {"message": "Welcome to the Recipe API!"}
+    return JSONResponse(
+        status_code=404,
+        content={}
+    )
 
 @app.get("/recipes", response_model=Recipies)
 async def get_recipes(session: SessionDep):
